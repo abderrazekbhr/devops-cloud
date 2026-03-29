@@ -1,2 +1,10 @@
 ---
-  - name :
+  - name : Install and config tomcat
+    hosts: all
+    become: yes
+    tasks:
+      - name: Create tomcat user
+        shell: sudo useradd -m -d /opt/tomcat -U -s /bin/false tomcat
+      - name: Install java
+        apt: name=openjdk-11-jdk state=present
+        
