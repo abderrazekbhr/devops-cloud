@@ -1,38 +1,40 @@
-Role Name
-=========
+# tomcat role
 
-A brief description of the role goes here.
+## Description
+Setup Tomcat 11 from Apache tarball and manage systemd service.
 
-Requirements
-------------
+## Role variables
+Defined in `roles/tomcat/defaults/main.yml`:
+- `tomcat_version`
+- `tomcat_user`
+- `tomcat_group`
+- `tomcat_install_dir`
+- `tomcat_service_name`
+- `tomcat_archive_url`
+- `tomcat_archive_dest`
+- `tomcat_service_file`
+- `tomcat_java_pkg`
+- `tomcat_app_war`
+- `tomcat_app_source`
+- `tomcat_app_dest`
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## Example playbook
+```yaml
+- hosts: all
+  become: yes
+  roles:
+    - tomcat
+```
 
-Role Variables
---------------
-
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
-
-Dependencies
-------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
-Example Playbook
-----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+## Inventory
+Use YAML inventory `ansible-tomcat/hosts.yml` in root directory:
+```yaml
+all:
+  hosts:
+    vm-alpha:
+      ansible_host: 35.241.224.131
+    vm-beta:
+      ansible_host: 34.38.123.95
+    vm-gamma:
+      ansible_host: 35.205.215.122
+```

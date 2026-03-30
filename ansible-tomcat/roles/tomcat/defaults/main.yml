@@ -1,2 +1,15 @@
 ---
-# defaults file for ./roles/tomcat
+# Default Tomcat role variables (can be overridden in playbook/group_vars/host_vars)
+tomcat_version: "11.0.18"
+tomcat_user: "tomcat"
+tomcat_group: "tomcat"
+tomcat_install_dir: "/opt/tomcat"
+tomcat_service_name: "tomcat"
+tomcat_archive_name: "apache-tomcat-{{ tomcat_version }}.tar.gz"
+tomcat_archive_url: "https://dlcdn.apache.org/tomcat/tomcat-11/v{{ tomcat_version }}/bin/{{ tomcat_archive_name }}"
+tomcat_archive_dest: "/tmp/{{ tomcat_archive_name }}"
+tomcat_service_file: "tomcat.service"
+tomcat_java_pkg: "openjdk-17-jdk"
+tomcat_app_war: "SampleWebApp.war"
+tomcat_app_source: "dist/{{ tomcat_app_war }}"
+tomcat_app_dest: "{{ tomcat_install_dir }}/webapps/{{ tomcat_app_war }}"
