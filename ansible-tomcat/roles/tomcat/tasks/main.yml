@@ -62,3 +62,11 @@
   when: tomcat_app_war | length > 0
   notify: restart tomcat
   tags: tomcat_app
+
+- name: Deploy app in localhost using xml
+  template:
+    src: roles/tomcat/templates/context.xml.j2
+    dest: "{{ tomcat_context_dest }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+  tags: deploy_app_xml
