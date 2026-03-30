@@ -2,9 +2,69 @@
   - name : Install and config tomcat
     hosts: all
     become: yes
+    vars:
+      - version: 11.0.18
+      - user: tomcat
+      - group: tomcat   
+      - project: "sample.war"
     tasks:
+      - name: Check tomcat user existence
+        shell: id -u tomcat
+        register: tomcat_user_check
+        ignore_errors: yes  
+        tags: check_user
+
+      - name: Print tomcat user check result
+        debug:
+          msg: "{{ tomcat_user_check}}"
+        tags: display_test_user
+
       - name: Create tomcat user
-        shell: sudo useradd -m -d /opt/tomcat -U -s /bin/false tomcat
-      - name: Install java
-        apt: name=openjdk-11-jdk state=present
+        user:
+          name: tomcat
+          home: /opt/tomcat
+          shell: /bin/false
+          state: present
         
+
+      - name: Install java
+        apt: name=openjdk-17-jdk state=present
+
+      - name: Download tomcat
+        get_url:
+          url: https://dlcdn.apache.org/tomcat/tomcat-11/v11.0.18/bin/apache-tomcat-11.0.18.tar.gz
+          dest: /tmp/apache-tomcat-{{version}}.tar.gz
+
+      - name: Extract tomcat
+        unarchive:
+          src: /tmp/apache-tomcat-11.0.18.tar.gz
+          dest: /opt/tomcat/
+          remote_src: true # to avoid copying the file to the remote server before unarchiving
+          owner: {{user}} # to avoid permission issues when starting the tomcat service
+          group: {{group}}
+          extra_opts:
+            - --strip-components=1 # to avoid creating a subdirectory named apache-tomcat-11.0.18
+      
+      - name: Copy tomcat.service file
+        copy:
+          src: tomcat.service
+          dest: /etc/systemd/system/tomcat.service
+          owner: root
+          group: root
+      
+      - name: Reload systemd
+        systemd:
+          daemon_reload: yes
+
+      - name: Start and enable tomcat service
+        systemd:
+          name: tomcat
+          state: started
+          enabled: yes
+    
+      - name: Deploy sample application
+        copy:
+          src: dist/{{}}
+          dest: /opt/tomcat/webapps/sample.war
+          owner: tomcat
+          group: tomcat

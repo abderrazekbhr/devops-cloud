@@ -1,0 +1,12 @@
+---
+  - name: Install zabbix and config
+    hosts: all
+    become: yes
+    vars:
+      hostname: "{{ inventory_hostname }}"
+
+    tasks:
+      - name: Install zabbix
+        apt: name=zabbix-agent state=present
+      - name: Update zabbix agent configuration
+        

@@ -1,0 +1,46 @@
+---
+# tasks file for ./roles/tomcat
+- name: Update apt cache
+  apt: update_cache=yes
+
+- name: Create tomcat user
+  user:
+    name: tomcat
+    home: /opt/tomcat
+    shell: /bin/false
+    state: present
+
+- name: Install java
+  apt: name=openjdk-17-jdk state=present
+
+- name: Download tomcat
+  get_url:
+    url: https://dlcdn.apache.org/tomcat/tomcat-11/v11.0.18/bin/apache-tomcat-11.0.18.tar.gz
+    dest: /tmp/apache-tomcat-11.0.18.tar.gz
+
+- name: Extract tomcat
+  unarchive:
+    src: /tmp/apache-tomcat-11.0.18.tar.gz
+    dest: /opt/tomcat/
+    remote_src: true # to avoid copying the file to the remote server before unarchiving
+    owner: tomcat # to avoid permission issues when starting the tomcat service
+    group: tomcat
+    extra_opts:
+      - --strip-components=1 # to avoid creating a subdirectory named apache-tomcat-11.0.18
+
+- name: Copy tomcat.service file
+  copy:
+    src: tomcat.service
+    dest: /etc/systemd/system/tomcat.service
+    owner: root
+    group: root
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: Start and enable tomcat service
+  systemd:
+    name: tomcat
+    state: started
+    enabled: yes
