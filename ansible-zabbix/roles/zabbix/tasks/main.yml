@@ -1,2 +1,14 @@
 ---
 # tasks file for ./roles/zabbix
+
+- name: Install zabbix
+  apt: name=zabbix-agent state=present
+  tags: install
+- name: Update zabbix agent configuration
+  template:
+    src: "{{ zabbix_agent_conf_template }}"
+    dest: /etc/zabbix/zabbix_agentd.conf
+    owner: root
+    group: root
+  notify: restart_zabbix_agent
+  tags: config

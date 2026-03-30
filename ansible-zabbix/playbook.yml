@@ -1,0 +1,6 @@
+---
+  - name: Install zabbix and config
+    hosts: all
+    become: true
+    roles:
+      - zabbix  

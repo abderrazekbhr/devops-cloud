@@ -1,2 +1,8 @@
 ---
 # defaults file for ./roles/zabbix
+
+server: "172.19.203.181"
+serverActive: "172.19.203.181"
+hostname: "Zabbix serveur abderrazek"
+zabbix_agent_conf_template: "roles/zabbix/templates/zabbix_agentd.conf.j2"
+zabbix_agent_service_name: "zabbix-agent"

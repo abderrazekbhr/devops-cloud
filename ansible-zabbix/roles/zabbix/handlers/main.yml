@@ -1,2 +1,6 @@
 ---
-# handlers file for ./roles/zabbix
+- name: restart_zabbix_agent
+  systemd:
+    name: "{{ zabbix_agent_service_name }}"
+    state: restarted
+    enabled: yes
